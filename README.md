@@ -1,3 +1,10 @@
+Firstly, please configure environment
+```
+touch .env
+```
+copy variable same as .env.example
+
+
 Install app:
 ```
 npm install -g typescript

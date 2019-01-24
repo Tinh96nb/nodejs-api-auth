@@ -1,0 +1,43 @@
+version: '3'
+services:
+  web:
+    container_name: "auth-app"
+    build: .
+    ports:
+      - "${PORT_APP}:80"
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules
+    depends_on:
+      - db
+      - redis
+  db:
+    container_name: "auth-mysql"
+    image: "mysql:5.5"
+    volumes:
+       - ./db:/var/lib/mysql/data
+    ports:
+      - "${DB_PORT}:3306"
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    command:
+      - --innodb_use_native_aio=0
+      - --character-set-server=utf8
+      - --collation-server=utf8_unicode_ci
+    networks:
+      default:
+        ipv4_address: ${DB_HOST}
+  redis:
+    image: redis:3.2.9-alpine
+    container_name: "auth-redis"
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      default:
+        ipv4_address: ${REDIST_HOST}
+networks:
+  default:
+    external:
+      name: private_net
